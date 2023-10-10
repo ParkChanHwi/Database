@@ -1,0 +1,150 @@
+sqlplus 박찬휘/pass201924395@iedb.kangwon.ac.kr
+or
+sqlplus 박찬휘@iedb.kangwon.ac.kr
+pass201924395
+
+
+설치안된경우 집에서 -  telnet이있는데(리눅스) 현재는 지원 x 
+window10 = ssh가 있다.
+ssh ieuser@iedb.kangwon.ac.kr -p 2222 
+이면 교 외에서도 접속이 될 것이다.
+password : tiger
+$표시 - os shell 
+ 
+host해보면 리눅스인거 알 수 있다.
+exit으로 나오기
+
+ select * from tab;  -  user가 가진 테이블 목록 table list of user
+
+set line 200 // 출력 맘에 안들때 해보기
+
+desc dept; 
+
+VARCHAR2 : 가변 문자열 - 사이즈가 가변한다는 뜻
+
+보통 가변문자열만 사용 fixed length는 사용 x
+ 
+
+사원번호는 숫자 (NUMBER)로 하면 좋지 않다. - 연산도 사용할 일 없고 
+검색시에도 문자로 사용해도 문제될 것이 없으므로
+
+National Language Support - NLS   
+operator : by manual
+manager: solver
+
+
+select * from dept;
+
+select empno, ename, hiredate, deptno from emp;
+
+개체    무결성
+참조    무결성
+도메인무결성
+
+
+alter table dept add constraint pk_dept 
+primary key (deptno);
+
+alter table dept disable constraint pk_dept; 프라이머리키 비활성화
+
+
+ delete from dept where loc is null;  -- null값은 is null을 써야한다 == 연산자 no
+
+delete from dept where dname = 'MARKETTING';   - SQL은 ' ' single 쿼터(?) 사용 더블쿼터 에러
+
+commit 데이터베이스의 트랜잭션 관리 때문에 commit해야 확정
+
+
+update dept set deptno=30 where deptno=40
+*
+1행에 오류:
+ORA-00001: 무결성 제약 조건(박찬휘.PK_DEPT)에 위배됩니다
+
+
+select empno,ename, deptno from emp;
+
+emp테이블에서 smith의 부서번호를 50으로 바꾸면 emp table에 smith의 deptno는 50으로 나온다
+하지만 dept 테이블을 조회해보면 부서번호가 50인 부서는 없다 이러면 안된다.
+
+-update emp set deptno=20 where deptno=50; 다시 바꿔줌
+
+emp테이블의 deptno는 foriegn key이다 다른 테이블의 primary키를 참조하는 
+
+alter table emp add constraint fk_emp_dept
+  2  foreign key (deptno) references dept(deptno);
+
+
+
+SQL> update emp set deptno=40 where empno=7934;
+
+1 행이 업데이트되었습니다.
+
+SQL> update emp set deptno=50 where empno=7934;
+update emp set deptno=50 where empno=7934
+*
+1행에 오류:
+ORA-02291: 무결성 제약조건(박찬휘.FK_EMP_DEPT)이 위배되었습니다- 부모 키가 없습니다
+
+
+SQL> insert into dept (deptno,dname) values (50, 'MARKETTING');
+
+1 개의 행이 만들어졌습니다.
+
+SQL> update emp set deptno=50 where empno=7934;
+
+1 행이 업데이트되었습니다.
+
+
+commit;
+
+
+SQL> update emp set deptno = null where deptno = 50;
+
+1 행이 업데이트되었습니다.
+
+SQL> select empno, ename, deptno from emp;
+
+     EMPNO ENAME                                                                                                    DEPTNO
+---------- ---------------------------------------------------------------------------------------------------- ----------
+      7369 SMITH                                                                                                        20
+      7499 ALLEN                                                                                                        30
+      7521 WARD                                                                                                         30
+      7566 JONES                                                                                                        20
+      7654 MARTIN                                                                                                       30
+      7698 BLAKE                                                                                                        30
+      7782 CLARK                                                                                                        10
+      7788 SCOTT                                                                                                        20
+      7839 KING                                                                                                         10
+      7844 TURNER                                                                                                       30
+      7876 ADAMS                                                                                                        20
+
+     EMPNO ENAME                                                                                                    DEPTNO
+---------- ---------------------------------------------------------------------------------------------------- ----------
+      7900 JAMES                                                                                                        30
+      7902 FORD                                                                                                         20
+      7934 MILLER
+
+14 행이 선택되었습니다.
+
+
+외래키는 NULL을 허용한다.
+
+SQL> update dept set deptno=70 where deptno = 30;
+update dept set deptno=70 where deptno = 30
+*
+1행에 오류:
+ORA-02292: 무결성 제약조건(박찬휘.FK_EMP_DEPT)이 위배되었습니다- 자식 레코드가 발견되었습니다
+
+
+SQL> delete from dept where deptno = 10;
+delete from dept where deptno = 10
+*
+1행에 오류:
+ORA-02292: 무결성 제약조건(박찬휘.FK_EMP_DEPT)이 위배되었습니다- 자식 레코드가 발견되었습니다
+
+
+SQL> delete from dept where deptno = 50;
+
+1 행이 삭제되었습니다.
+
+
