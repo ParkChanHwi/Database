@@ -258,6 +258,65 @@ vFlat 스캔에 제약 - 뭔말한건지 모르겠음
 28.
 지도교수,참여학생,멘토,멘티
 
+row선택 셀렉션
+column 선택 프로젝션
+누가써 이걸 넘어가~ - 교수님
 
+조인
+- 나중에 다시
+equi-join = natural join
+
+외래키 존재 테이블 - 자식 테이블
+
+emp <work> dept
+mapping cardinality 
+
+
+emp에는 특정 사원이 부서 하나를 가지고 있다
+즉 하나의 사원은 dept 하나에서 근무
+1 : 1
+한 부서에는 여러 사원이 근무 
+N : 1
+즉 N : 1 구조
+
+M : N이 되려면 
+한 사람이 복수개의 부서를 가져야한다.
+
+즉 emp -> dept 한 번 보고
+dept -> emp 한 번 확인
+
+수퍼테이블을 만드려고 한다면
+emp로 합치는게 나을것
+
+  1  select emp.empno, emp.ename, emp.deptno, dept.dname, dept.loc
+  2  from emp, dept
+  3* where emp.deptno = dept.deptno
+SQL> /
+
+     EMPNO ENAME                                                                                                    DEPTNO DNAME                        LOC
+---------- ---------------------------------------------------------------------------------------------------- ---------- ---------------------------- --------------------------
+      7369 SMITH                                                                                                        20 RESEARCH                     DALLAS
+      7499 ALLEN                                                                                                        30 SALES                        CHICAGO
+      7521 WARD                                                                                                         30 SALES                        CHICAGO
+      7566 JONES                                                                                                        20 RESEARCH                     DALLAS
+      7654 MARTIN                                                                                                       30 SALES                        CHICAGO
+      7698 BLAKE                                                                                                        30 SALES                        CHICAGO
+      7782 CLARK                                                                                                        10 ACCOUNTING                   NEW YORK
+      7788 SCOTT                                                                                                        20 RESEARCH                     DALLAS
+      7839 KING                                                                                                         10 ACCOUNTING                   NEW YORK
+      7844 TURNER                                                                                                       30 SALES                        CHICAGO
+      7876 ADAMS                                                                                                        20 RESEARCH                     DALLAS
+
+     EMPNO ENAME                                                                                                    DEPTNO DNAME                        LOC
+---------- ---------------------------------------------------------------------------------------------------- ---------- ---------------------------- --------------------------
+      7900 JAMES                                                                                                        30 SALES                        CHICAGO
+      7902 FORD                                                                                                         20 RESEARCH                     DALLAS
+
+13 행이 선택되었습니다.
+
+join condition check
+
+시험은 ~~~~~~~~~~~~~~~~~~~~~ 아직 생각중 보지말까??????
+기말에 한번에 봐도 네 좋습니다 아싸
 
 
