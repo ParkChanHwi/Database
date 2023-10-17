@@ -1,0 +1,263 @@
+40인 부서에 아직 사원 입력을 받지 않겠다. (신설된 부서이기 때문에) -> domain constraint
+SQL> select * from dept
+  2  ;
+
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+        10 ACCOUNTING                   NEW YORK
+        20 RESEARCH                     DALLAS
+        30 SALES                        CHICAGO
+        40 OPERATIONS                   BOSTON
+
+SQL> desc emp
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER(4)
+ ENAME                                              VARCHAR2(50)
+ JOB                                                VARCHAR2(9)
+ MGR                                                NUMBER(4)
+ HIREDATE                                           DATE
+ SAL                                                NUMBER(7,2)
+ COMM                                               NUMBER(7,2)
+ DEPTNO                                             NUMBER(2)
+ CELL                                               VARCHAR2(13)
+
+SQL> alter table emp add constraint deptno_cons
+  2  check (deptno in (10,20,30))
+  3  ;
+
+테이블이 변경되었습니다.
+
+SQL> update emp set deptno = 40 where deptno = 30;
+update emp set deptno = 40 where deptno = 30
+*
+1행에 오류:
+ORA-02290: 체크 제약조건(박찬휘.DEPTNO_CONS)이 위배되었습니다
+
+sal 800
+
+alter table emp add constraint deptno_cons
+  2  check (deptno in (10,20,30));
+
+
+
+
+SQL> alter table emp add constraint sal_cons
+  2  check (sal >= 900);
+alter table emp add constraint sal_cons
+                               *
+1행에 오류:
+ORA-02293: (박찬휘.SAL_CONS)을 검증할 수 없습니다 - 잘못된 제약을 확인합니다
+
+
+SQL> update emp set sal = 900 where sal < 900;
+
+1 행이 업데이트되었습니다.
+
+SQL> alter emp add constraint sal_cons
+  2  check (sal >= 900);
+alter emp add constraint sal_cons
+      *
+1행에 오류:
+ORA-00940: ALTER 명령어가 부적합합니다
+
+
+SQL> alter table emp add constraint sal_cons
+  2  check (sal >= 900);
+
+테이블이 변경되었습니다.
+
+
+SQL> update emp set sal=700 where ename = 'SMITH'
+  2  ;
+update emp set sal=700 where ename = 'SMITH'
+*
+1행에 오류:
+ORA-02290: 체크 제약조건(박찬휘.SAL_CONS)이 위배되었습니다
+
+
+SQL> alter table emp disable constraint sal_cons;
+
+테이블이 변경되었습니다.
+비활성화
+
+
+SQL> update emp set sal=700 where ename = 'SMITH';
+
+1 행이 업데이트되었습니다.
+
+SQL> rollback;
+
+롤백이 완료되었습니다.
+
+SQL> update emp set sal = 700 where ename = 'SMITH';
+SQL> set line 200;
+SQL> select ename, sal from emp;
+
+ENAME
+   SAL
+---------------------------------------------------------------------------------------------------- ----------
+SMITH
+   700
+ALLEN
+  1600
+WARD
+  1250
+JONES
+  2975
+MARTIN
+  1250
+BLAKE
+  2850
+CLARK
+  2450
+SCOTT
+  3000
+KING
+  5000
+TURNER
+  1500
+ADAMS
+  1100
+
+ENAME
+   SAL
+---------------------------------------------------------------------------------------------------- ----------
+JAMES
+   950
+FORD
+  3300
+MILLER
+  1300
+
+14 행이 선택되었습니다.
+
+SQL> alter table emp enable constraint sal_cons
+  2  ;
+alter table emp enable constraint sal_cons
+                                  *
+1행에 오류:
+ORA-02293: (박찬휘.SAL_CONS)을 검증할 수 없습니다 - 잘못된 제약을 확인합니다.
+
+제약식은 업데이트 불가 활성화 비활성화 가능
+
+ select constraint_name, constraint_type, table_name, search_condition from user_constraints;
+
+CONSTRAINT_NAME                                              CO TABLE_NAME
+------------------------------------------------------------ -- ------------------------------------------------------------
+SEARCH_CONDITION
+--------------------------------------------------------------------------------
+DEPTNO_CONS                                                  C  EMP
+deptno in (10,20,30)
+
+FK_EMP_DEPT                                                  R  EMP
+
+
+PK_DEPT                                                      P  DEPT
+
+
+
+CONSTRAINT_NAME                                              CO TABLE_NAME
+------------------------------------------------------------ -- ------------------------------------------------------------
+SEARCH_CONDITION
+--------------------------------------------------------------------------------
+PK_EMP                                                       P  EMP
+
+
+SAL_CONS                                                     C  EMP
+
+FK 외래키
+PK 기본키 	
+C check
+
+
+
+
+SQL> create table temp (id varchar2(10) not null,name varchar2(10),
+  2  age number(3));
+
+테이블이 생성되었습니다.
+
+SQL> desc
+사용법: DESCRIBE [schema.]object[@db_link]
+SQL> desc temp
+ 이름                                                                                                              널?      유형
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ ID                                                                                                                NOT NULL VARCHAR2(10)
+ NAME                                                                                                                       VARCHAR2(10)
+ AGE                                                                                                                        NUMBER(3)
+
+
+SQL> alter table temp modify (id null);
+
+테이블이 변경되었습니다.
+
+SQL> desc
+사용법: DESCRIBE [schema.]object[@db_link]
+SQL> desc temp
+ 이름                                                                                                              널?      유형
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ ID                                                                                                                         VARCHAR2(10)
+ NAME                                                                                                                       VARCHAR2(10)
+ AGE                                                                                                                        NUMBER(3)
+
+http://iedb.kangwon.ac.kr/p149.jpg
+
+17 - 2(?)
+
+148 pg 
+11번 답 3번
+
+15 - 4
+
+16 - 3
+
+18 - 도메인
+
+19 (4) -  x  (NULL 값 가능)
+ ex) emp table의 king  mgr
+
+
+  1  alter table emp add constraint fk_mgr foreign key (mgr)
+  2* references emp(empno)
+SQL> /
+
+테이블이 변경되었습니다.
+
+20 
+A (o)
+B (o)
+C (o)
+D (x)
+E (o)
+
+21
+A ()
+B ()
+C ()
+D (x) - 같아도 된다
+E (x)
+F (o)
+
+25
+다른 테이블의 primary키를 참조하는 키가 foriegn key
+담당의사가 외래키
+A - D004와 같이 없는 입력이 오는 경우
+B - 없는 값으로 업데이트 되는 경우
+E, F    -    참조 무결성 해침
+
+26
+x o o
+o x o
+
+
+vFlat 스캔에 제약 - 뭔말한건지 모르겠음
+
+
+
+28.
+지도교수,참여학생,멘토,멘티
+
+
+
+
