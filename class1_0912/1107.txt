@@ -1,0 +1,1160 @@
+Microsoft Windows [Version 10.0.22621.2428]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\user>sqlplus 박찬휘/pass201924395@iedb.kangwon.ac.kr
+
+SQL*Plus: Release 19.0.0.0.0 - Production on 화 11월 7 14:07:46 2023
+Version 19.3.0.0.0
+
+Copyright (c) 1982, 2019, Oracle.  All rights reserved.
+
+
+다음에 접속됨:
+Oracle Database 11g Enterprise Edition Release 11.2.0.1.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SQL> show user
+USER은 "박찬휘"입니다
+SQL> select * from tab
+  2  ;
+
+TNAME                                                        TABTYPE
+------------------------------------------------------------ --------------
+ CLUSTERID
+----------
+DEPT                                                         TABLE
+
+
+EMP                                                          TABLE
+
+
+EMP30                                                        VIEW
+
+
+
+TNAME                                                        TABTYPE
+------------------------------------------------------------ --------------
+ CLUSTERID
+----------
+MENTORING                                                    TABLE
+
+
+P_EMP                                                        VIEW
+
+
+SAL_REPORT                                                   VIEW
+
+
+
+TNAME                                                        TABTYPE
+------------------------------------------------------------ --------------
+ CLUSTERID
+----------
+TAB2                                                         TABLE
+
+
+고객                                                         TABLE
+
+
+
+8 행이 선택되었습니다.
+
+SQL> desc emp
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER(4)
+ ENAME                                              VARCHAR2(50)
+ JOB                                                VARCHAR2(9)
+ MGR                                                NUMBER(4)
+ HIREDATE                                           DATE
+ SAL                                                NUMBER(7,2)
+ COMM                                               NUMBER(7,2)
+ DEPTNO                                             NUMBER(2)
+ CELL                                               VARCHAR2(13)
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  insert into emp(empno, ename, hiredate)
+  2  values (5555,'YOUNG-KWAN',
+  3* to_date('2023/11/07','yyyy/mm/dd'))
+SQL> /
+
+1 개의 행이 만들어졌습니다.
+
+SQL> select empno,ename, hiredate from emp;
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+      5555
+YOUNG-KWAN
+23/11/07
+
+      7369
+SMITH
+80/12/17
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+
+      7499
+ALLEN
+81/02/20
+
+      7521
+WARD
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+81/02/22
+
+      7566
+JONES
+81/04/02
+
+      7654
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+MARTIN
+81/09/28
+
+      7698
+BLAKE
+81/05/01
+
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+      7782
+CLARK
+81/06/09
+
+      7788
+SCOTT
+87/04/19
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+
+      7839
+KING
+81/11/17
+
+      7844
+TURNER
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+81/09/08
+
+      7876
+ADAMS
+87/05/23
+
+      7900
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+JAMES
+81/12/03
+
+      7902
+FORD
+81/12/03
+
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+HIREDATE
+--------
+      7934
+MILLER
+82/01/23
+
+
+15 행이 선택되었습니다.
+
+
+
+SQL> select sysdate from dual;
+
+SYSDATE
+--------
+23/11/06
+SQL> insert into emp(empno, ename, hiredate)
+  2  values (877, 'CHUNG', sysdate);
+
+1 개의 행이 만들어졌습니다.
+
+SQL> sysdate
+SP2-0042: 알 수 없는 명령어 "sysdate" - 나머지 줄 무시.
+SQL> select sysdate from dual;
+
+SYSDATE
+--------
+23/11/06
+
+SQL> commit;
+
+커밋이 완료되었습니다.
+
+SQL> select * from emp where ename = 'CHUNG';
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+JOB                       MGR HIREDATE        SAL       COMM     DEPTNO
+------------------ ---------- -------- ---------- ---------- ----------
+CELL
+--------------------------
+       877
+CHUNG
+                              23/11/06
+
+
+
+SQL> update emp set sal=1000, deptno=10 // 이러면 안된다.
+  2  ;
+
+16 행이 업데이트되었습니다.
+
+SQL> rollback;
+ㄴ비
+롤백이 완료되었습니다.
+
+SQL> update emp set sal = 1000, deptno = 10 where ename='CHUNG';
+
+1 행이 업데이트되었습니다.
+
+  1* select empno, ename, sal, deptno from emp where ename = 'CHUNG'
+SQL> /
+
+     EMPNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL     DEPTNO
+---------- ----------
+       877
+CHUNG
+      1000         10
+where문에서 대소문자 구별해야함
+update table_name set col1=val1, col2=val2 where <condition>
+
+SQL> delete from emp where ename = 'CHUNG';
+
+1 행이 삭제되었습니다.
+
+SQL> select col1, col2 ... 
+     from emp 
+     where <condition>
+
+
+SQL> select ename, sal from emp where deptno=10;
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+CLARK
+      2450
+
+KING
+      5000
+
+SQL> select ename, sal, sal*1.2 from emp;
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL    SAL*1.2
+---------- ----------
+YOUNG-KWAN
+
+
+SMITH
+       700        840
+
+ALLEN
+      1600       1920
+
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL    SAL*1.2
+---------- ----------
+WARD
+      1250       1500
+
+JONES
+      2975       3570
+
+MARTIN
+      1250       1500
+
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL    SAL*1.2
+---------- ----------
+BLAKE
+      2850       3420
+
+CLARK
+      2450       2940
+
+SCOTT
+      3000       3600
+
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL    SAL*1.2
+---------- ----------
+KING
+      5000       6000
+
+TURNER
+      1500       1800
+
+ADAMS
+      1100       1320
+
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL    SAL*1.2
+---------- ----------
+JAMES
+       950       1140
+
+FORD
+      3300       3960
+
+MILLER
+      1300       1560
+
+
+15 행이 선택되었습니다.
+
+
+
+SQL> select ename || job from emp;
+
+ENAME||JOB
+--------------------------------------------------------------------------------
+YOUNG-KWAN
+SMITHCLERK
+ALLENSALESMAN
+WARDSALESMAN
+JONESMANAGER
+MARTINSALESMAN
+BLAKEMANAGER
+CLARKMANAGER
+SCOTTANALYST
+KINGPRESIDENT
+TURNERSALESMAN
+
+ENAME||JOB
+--------------------------------------------------------------------------------
+ADAMSCLERK
+JAMESCLERK
+FORDANALYST
+MILLERCLERK
+
+15 행이 선택되었습니다.
+
+concatenation; cat
+  1  select ename || ' is ' || job ||'.'
+  2* from emp where deptno=20
+SQL> /
+
+ENAME||'IS'||JOB||'.'
+--------------------------------------------------------------------------------
+SMITH is CLERK.
+JONES is MANAGER.
+SCOTT is ANALYST.
+ADAMS is CLERK.
+FORD is ANALYST.
+
+SQL> deit
+SP2-0042: 알 수 없는 명령어 "deit" - 나머지 줄 무시.
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select initcap(ename) || ' is ' || job ||'.'
+  2* from emp where deptno=20
+SQL> /
+
+INITCAP(ENAME)||'IS'||JOB||'.'
+--------------------------------------------------------------------------------
+Smith is CLERK.
+Jones is MANAGER.
+Scott is ANALYST.
+Adams is CLERK.
+Ford is ANALYST.
+
+initcap 함수 첫 글자 대문자 나머지 소문자
+
+
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select initcap(ename) || ' is ' || lower(job) ||'.'
+  2* from emp where deptno=20
+SQL> /
+
+INITCAP(ENAME)||'IS'||LOWER(JOB)||'.'
+--------------------------------------------------------------------------------
+Smith is clerk.
+Jones is manager.
+Scott is analyst.
+Adams is clerk.
+Ford is analyst.
+
+lower 전부 소문자
+
+
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select initcap(ename) || ' is ' || lower(job) ||'.'
+  2  from emp where deptno=20 or
+  3  (sal >= 3000
+  4* and job != 'CLERK')   // 괄호로 우선순위 not equal 원래 데이터 베이스는 <>였는데 요즘 != 주로 사용 
+SQL> /
+
+INITCAP(ENAME)||'IS'||LOWER(JOB)||'.'
+--------------------------------------------------------------------------------
+Smith is clerk.
+Jones is manager.
+Scott is analyst.
+King is president.
+Adams is clerk.
+Ford is analyst.
+
+6 행이 선택되었습니다.
+
+
+SQL> select ename, sal from emp where ename = 'A';  - 이름이 A인 사람
+
+선택된 레코드가 없습니다.
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1* select ename, sal from emp where ename like 'A%'               - 이름이 A로 시작하는 사람
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+ALLEN
+      1600
+
+ADAMS
+      1100
+
+  1* select ename, sal from emp where ename like '%A%'
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+YOUNG-KWAN
+
+
+ALLEN
+      1600
+
+WARD
+      1250
+
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+MARTIN
+      1250
+
+BLAKE
+      2850
+
+CLARK
+      2450
+
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+ADAMS
+      1100
+
+JAMES
+       950
+
+
+8 행이 선택되었습니다.
+
+이름에 A가 하나라도 들어가는 사람
+
+
+
+  1  select ename, sal from emp
+  2* where ename like '_L%'
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+ALLEN
+      1600
+
+BLAKE
+      2850
+
+CLARK
+      2450
+
+_ - 어떤 글자가 와도 상관이 없다.
+
+
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select ename, sal from emp
+  2  where ename like '_L%'
+  3* order by sal
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+ALLEN
+      1600
+
+CLARK
+      2450
+
+BLAKE
+      2850
+
+정렬
+
+알고리즘 복잡도
+/
+
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select ename, sal from emp
+  2  where ename like '_L%'
+  3* order by sal desc
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+BLAKE
+      2850
+
+CLARK
+      2450
+
+ALLEN
+      1600
+
+디폴트는 어센딩 오름차순 asc
+디센딩은 내림차순  desc
+
+
+
+  1  select deptno,ename, sal from emp
+  2  where ename like '_L%'
+  3* order by deptno, sal desc
+SQL> /
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+        10
+CLARK
+      2450
+
+        30
+BLAKE
+      2850
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+
+        30
+ALLEN
+      1600
+
+
+SQL> 첫번째 오더는 부서별, 두번째는 sal 순으로
+
+
+  1  select deptno,ename, sal from emp
+  2* order by deptno, sal desc
+SQL> /
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+        10
+KING
+      5000
+
+        10
+CLARK
+      2450
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+
+        20
+FORD
+      3300
+
+        20
+SCOTT
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+      3000
+
+        20
+JONES
+      2975
+
+        20
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+ADAMS
+      1100
+
+        20
+SMITH
+       700
+
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+        30
+BLAKE
+      2850
+
+        30
+ALLEN
+      1600
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+
+        30
+TURNER
+      1500
+
+        30
+WARD
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+      1250
+
+        30
+MARTIN
+      1250
+
+        30
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+JAMES
+       950
+
+
+YOUNG-KWAN
+
+
+
+    DEPTNO
+----------
+ENAME
+--------------------------------------------------------------------------------
+       SAL
+----------
+
+MILLER
+      1300
+
+
+15 행이 선택되었습니다.
+
+부서별/ 급여 현황
+
+
+SQL> select sum(sal), avg(sal), max(sal), min(sal) from emp where deptno > 10;
+
+  SUM(SAL)   AVG(SAL)   MAX(SAL)   MIN(SAL)
+---------- ---------- ---------- ----------
+     20475 1861.36364       3300        700
+
+
+ select deptno,sum(sal), avg(sal), count(*) from emp group by deptno
+  2  ;
+
+    DEPTNO   SUM(SAL)   AVG(SAL)   COUNT(*)
+---------- ---------- ---------- ----------
+                 1300       1300          2
+        30       9400 1566.66667          6
+        20      11075       2215          5
+        10       7450       3725          2
+부서별 급여 현황 update로 miller의 부서 10으로 변경하고 deptno 없는 애 삭제하기
+/
+
+  2* order by deptno
+SQL> /
+
+DEPARTMENT      TOTAL    AVERAGE      COUNT
+---------- ---------- ---------- ----------
+        10       7450       3725          2
+        20      11075       2215          5
+        30       9400 1566.66667          6
+                 1300       1300          2
+
+
+  1* select ename, emp.deptno, dname, loc from emp, dept
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+SMITH
+        20 ACCOUNTING                   NEW YORK
+
+ALLEN
+        30 ACCOUNTING                   NEW YORK
+
+WARD
+        30 ACCOUNTING                   NEW YORK
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+JONES
+        20 ACCOUNTING                   NEW YORK
+
+MARTIN
+        30 ACCOUNTING                   NEW YORK
+
+BLAKE
+        30 ACCOUNTING                   NEW YORK
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+CLARK
+        10 ACCOUNTING                   NEW YORK
+
+SCOTT
+        20 ACCOUNTING                   NEW YORK
+
+KING
+        10 ACCOUNTING                   NEW YORK
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+TURNER
+        30 ACCOUNTING                   NEW YORK
+
+ADAMS
+        20 ACCOUNTING                   NEW YORK
+
+JAMES
+        30 ACCOUNTING                   NEW YORK
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+FORD
+        20 ACCOUNTING                   NEW YORK
+
+MILLER
+        10 ACCOUNTING                   NEW YORK
+
+SMITH
+        20 RESEARCH                     DALLAS
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+ALLEN
+        30 RESEARCH                     DALLAS
+
+WARD
+        30 RESEARCH                     DALLAS
+
+JONES
+        20 RESEARCH                     DALLAS
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+MARTIN
+        30 RESEARCH                     DALLAS
+
+BLAKE
+        30 RESEARCH                     DALLAS
+
+CLARK
+        10 RESEARCH                     DALLAS
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+SCOTT
+        20 RESEARCH                     DALLAS
+
+KING
+        10 RESEARCH                     DALLAS
+
+TURNER
+        30 RESEARCH                     DALLAS
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+ADAMS
+        20 RESEARCH                     DALLAS
+
+JAMES
+        30 RESEARCH                     DALLAS
+
+FORD
+        20 RESEARCH                     DALLAS
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+MILLER
+        10 RESEARCH                     DALLAS
+
+SMITH
+        20 SALES                        CHICAGO
+
+ALLEN
+        30 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+WARD
+        30 SALES                        CHICAGO
+
+JONES
+        20 SALES                        CHICAGO
+
+MARTIN
+        30 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+BLAKE
+        30 SALES                        CHICAGO
+
+CLARK
+        10 SALES                        CHICAGO
+
+SCOTT
+        20 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+KING
+        10 SALES                        CHICAGO
+
+TURNER
+        30 SALES                        CHICAGO
+
+ADAMS
+        20 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+JAMES
+        30 SALES                        CHICAGO
+
+FORD
+        20 SALES                        CHICAGO
+
+MILLER
+        10 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+SMITH
+        20 OPERATIONS                   BOSTON
+
+ALLEN
+        30 OPERATIONS                   BOSTON
+
+WARD
+        30 OPERATIONS                   BOSTON
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+JONES
+        20 OPERATIONS                   BOSTON
+
+MARTIN
+        30 OPERATIONS                   BOSTON
+
+BLAKE
+        30 OPERATIONS                   BOSTON
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+CLARK
+        10 OPERATIONS                   BOSTON
+
+SCOTT
+        20 OPERATIONS                   BOSTON
+
+KING
+        10 OPERATIONS                   BOSTON
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+TURNER
+        30 OPERATIONS                   BOSTON
+
+ADAMS
+        20 OPERATIONS                   BOSTON
+
+JAMES
+        30 OPERATIONS                   BOSTON
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+FORD
+        20 OPERATIONS                   BOSTON
+
+MILLER
+        10 OPERATIONS                   BOSTON
+
+
+56 행이 선택되었습니다.
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1* select ename, emp.deptno, dname, loc from emp, dept where emp.deptno = dept.deptno
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+SMITH
+        20 RESEARCH                     DALLAS
+
+ALLEN
+        30 SALES                        CHICAGO
+
+WARD
+        30 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+JONES
+        20 RESEARCH                     DALLAS
+
+MARTIN
+        30 SALES                        CHICAGO
+
+BLAKE
+        30 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+CLARK
+        10 ACCOUNTING                   NEW YORK
+
+SCOTT
+        20 RESEARCH                     DALLAS
+
+KING
+        10 ACCOUNTING                   NEW YORK
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+TURNER
+        30 SALES                        CHICAGO
+
+ADAMS
+        20 RESEARCH                     DALLAS
+
+JAMES
+        30 SALES                        CHICAGO
+
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+FORD
+        20 RESEARCH                     DALLAS
+
+MILLER
+        10 ACCOUNTING                   NEW YORK
+
+
+14 행이 선택되었습니다.
+
+
+ 1  select ename, emp.deptno, dname, loc from emp, dept where emp.deptno = dept.deptno
+  2* and ename = 'ALLEN'
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+    DEPTNO DNAME                        LOC
+---------- ---------------------------- --------------------------
+ALLEN
+        30 SALES                        CHICAGO
+
