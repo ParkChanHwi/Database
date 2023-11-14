@@ -1,0 +1,896 @@
+SQL> select max(sal) from emp;
+
+  MAX(SAL)
+----------
+      5000
+
+SQL> select ename from emp where sal = 5000;
+
+ENAME
+--------------------------------------------------------------------------------
+KING
+
+SQL> select ename, max(sal) from emp;
+select ename, max(sal) from emp
+       *
+1행에 오류:
+ORA-00937: 단일 그룹의 그룹 함수가 아닙니다
+
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select ename, max(sal) from emp
+  2* group by ename
+SQL> /
+
+ENAME
+--------------------------------------------------------------------------------
+  MAX(SAL)
+----------
+ALLEN
+      1600
+
+JONES
+      2975
+
+FORD
+      3300
+
+
+ENAME
+--------------------------------------------------------------------------------
+  MAX(SAL)
+----------
+CLARK
+      2450
+
+MILLER
+      1300
+
+SMITH
+       700
+
+
+ENAME
+--------------------------------------------------------------------------------
+  MAX(SAL)
+----------
+WARD
+      1250
+
+MARTIN
+      1250
+
+SCOTT
+      3000
+
+
+ENAME
+--------------------------------------------------------------------------------
+  MAX(SAL)
+----------
+TURNER
+      1500
+
+ADAMS
+      1100
+
+BLAKE
+      2850
+
+
+ENAME
+--------------------------------------------------------------------------------
+  MAX(SAL)
+----------
+KING
+      5000
+
+JAMES
+       950
+
+
+14 행이 선택되었습니다.
+
+
+SQL> select ename, sal, deptno from emp where deptno = (select deptno from emp where job = 'CLERK');
+select ename, sal, deptno from emp where deptno = (select deptno from emp where job = 'CLERK')
+                                                   *
+1행에 오류:
+ORA-01427: 단일 행 하위 질의에 2개 이상의 행이 리턴되었습니다.
+
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1* select ename, sal, deptno from emp where deptno in (select deptno from emp where job = 'CLERK')
+SQL> /
+
+ENAME             SAL     DEPTNO
+---------- ---------- ----------
+FORD             3300         20
+ADAMS            1100         20
+SCOTT            3000         20
+JONES            2975         20
+SMITH             700         20
+JAMES             950         30
+TURNER           1500         30
+BLAKE            2850         30
+MARTIN           1250         30
+WARD             1250         30
+ALLEN            1600         30
+
+ENAME             SAL     DEPTNO
+---------- ---------- ----------
+MILLER           1300         10
+KING             5000         10
+CLARK            2450         10
+
+14 행이 선택되었습니다.
+
+
+SQL> select ename, sal, job, deptno from emp
+  2  where deptno=20;
+
+ENAME             SAL JOB                    DEPTNO
+---------- ---------- ------------------ ----------
+SMITH             700 CLERK                      20
+JONES            2975 MANAGER                    20
+SCOTT            3000 ANALYST                    20
+ADAMS            1100 CLERK                      20
+FORD             3300 ANALYST                    20
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select ename, sal, job from emp
+  2* where deptno=20
+SQL> /
+
+ENAME             SAL JOB
+---------- ---------- ------------------
+SMITH             700 CLERK
+JONES            2975 MANAGER
+SCOTT            3000 ANALYST
+ADAMS            1100 CLERK
+FORD             3300 ANALYST
+
+SQL>
+
+
+  1  create or replace view emp20 as
+  2  select ename, sal, job from emp
+  3* where deptno=20
+SQL> /
+
+뷰가 생성되었습니다.
+
+없으면 만들고 있으면 대체
+
+SQL> column tname format a10;  --- 글씨 크기 줄이기
+SQL> select * from tab;
+
+TNAME      TABTYPE         CLUSTERID
+---------- -------------- ----------
+DEPT       TABLE
+EMP        TABLE
+EMP20      VIEW
+EMP30      VIEW
+MENTORING  TABLE
+P_EMP      VIEW
+SAL_REPORT VIEW
+TAB2       TABLE
+고객       TABLE
+
+9 행이 선택되었습니다.
+
+SQL> desc emp20;
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ ENAME                                              VARCHAR2(50)
+ SAL                                                NUMBER(7,2)
+ JOB                                                VARCHAR2(9)
+
+SQL> select * from emp20;
+
+ENAME             SAL JOB
+---------- ---------- ------------------
+SMITH             700 CLERK
+JONES            2975 MANAGER
+SCOTT            3000 ANALYST
+ADAMS            1100 CLERK
+FORD             3300 ANALYST
+
+
+
+
+
+SQL> select ename, sal from emp20 where job = 'ANALYST';
+
+ENAME             SAL
+---------- ----------
+SCOTT            3000
+FORD             3300
+
+SQL> select job, avg(sal) from emp20 group by job;
+
+JOB                  AVG(SAL)
+------------------ ----------
+CLERK                     900
+MANAGER                  2975
+ANALYST                  3150
+
+
+SQL> desc user_views;
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ VIEW_NAME                                 NOT NULL VARCHAR2(30)
+ TEXT_LENGTH                                        NUMBER
+ TEXT                                               LONG
+ TYPE_TEXT_LENGTH                                   NUMBER
+ TYPE_TEXT                                          VARCHAR2(4000)
+ OID_TEXT_LENGTH                                    NUMBER
+ OID_TEXT                                           VARCHAR2(4000)
+ VIEW_TYPE_OWNER                                    VARCHAR2(30)
+ VIEW_TYPE                                          VARCHAR2(30)
+ SUPERVIEW_NAME                                     VARCHAR2(30)
+ EDITIONING_VIEW                                    VARCHAR2(1)
+ READ_ONLY                                          VARCHAR2(1)
+
+
+SQL> select view_name, text from user_views;
+
+VIEW_NAME
+------------------------------------------------------------
+TEXT
+--------------------------------------------------------------------------------
+EMP20
+select ename, sal, job from emp
+where deptno=20
+
+EMP30
+select empno, ename, job, mgr from emp where deptno=30
+
+P_EMP
+select ename, job, deptno from emp
+
+VIEW_NAME
+------------------------------------------------------------
+TEXT
+--------------------------------------------------------------------------------
+
+SAL_REPORT
+select deptno, job, sum(sal) sum_sal, avg(sal) avg_sal from emp group by deptno,
+
+view를 만들때 실행했던 select문이 있음
+
+create view sal_report as select deptno, job, sum(sal), avg(sal) from emp
+
+SQL> select deptno, job, sum(sal), avg(sal) from emp
+  2  group by deptno, job
+  3  order by deptno, job;
+
+    DEPTNO JOB                  SUM(SAL)   AVG(SAL)
+---------- ------------------ ---------- ----------
+        10 CLERK                    1300       1300
+        10 MANAGER                  2450       2450
+        10 PRESIDENT                5000       5000
+        20 ANALYST                  6300       3150
+        20 CLERK                    1800        900
+        20 MANAGER                  2975       2975
+        30 CLERK                     950        950
+        30 MANAGER                  2850       2850
+        30 SALESMAN                 5600       1400
+
+9 행이 선택되었습니다.
+                                              *
+1행에 오류:
+ORA-00998: 이 식은 열의 별명과 함께 지정해야 합니다
+
+
+
+  1  create view sal_report as select deptno, job, sum(sal) sum_sal, avg(sal) avg_sal from emp
+  2  group by deptno, job
+  3* order by deptno, job
+SQL> /
+create view sal_report as select deptno, job, sum(sal) sum_sal, avg(sal) avg_sal from emp
+            *
+1행에 오류:
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  create or replace view sal_report as select deptno, job, sum(sal) sum_sal, avg(sal) avg_sal from emp
+  2  group by deptno, job
+  3* order by deptno, job
+SQL> /
+
+뷰가 생성되었습니다.
+
+
+SQL> select ename, job, deptno, dname, loc
+  2  from emp, dept
+  3  ;
+select ename, job, deptno, dname, loc
+                   *
+1행에 오류:
+ORA-00918: 열의 정의가 애매합니다
+
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select ename, job, emp.deptno, dname, loc
+  2* from emp, dept
+  3  /
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+SMITH      CLERK                      20 ACCOUNTING
+NEW YORK
+
+ALLEN      SALESMAN                   30 ACCOUNTING
+NEW YORK
+
+WARD       SALESMAN                   30 ACCOUNTING
+NEW YORK
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+JONES      MANAGER                    20 ACCOUNTING
+NEW YORK
+
+MARTIN     SALESMAN                   30 ACCOUNTING
+NEW YORK
+
+BLAKE      MANAGER                    30 ACCOUNTING
+NEW YORK
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+CLARK      MANAGER                    10 ACCOUNTING
+NEW YORK
+
+SCOTT      ANALYST                    20 ACCOUNTING
+NEW YORK
+
+KING       PRESIDENT                  10 ACCOUNTING
+NEW YORK
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+TURNER     SALESMAN                   30 ACCOUNTING
+NEW YORK
+
+ADAMS      CLERK                      20 ACCOUNTING
+NEW YORK
+
+JAMES      CLERK                      30 ACCOUNTING
+NEW YORK
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+FORD       ANALYST                    20 ACCOUNTING
+NEW YORK
+
+MILLER     CLERK                      10 ACCOUNTING
+NEW YORK
+
+SMITH      CLERK                      20 RESEARCH
+DALLAS
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+ALLEN      SALESMAN                   30 RESEARCH
+DALLAS
+
+WARD       SALESMAN                   30 RESEARCH
+DALLAS
+
+JONES      MANAGER                    20 RESEARCH
+DALLAS
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+MARTIN     SALESMAN                   30 RESEARCH
+DALLAS
+
+BLAKE      MANAGER                    30 RESEARCH
+DALLAS
+
+CLARK      MANAGER                    10 RESEARCH
+DALLAS
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+SCOTT      ANALYST                    20 RESEARCH
+DALLAS
+
+KING       PRESIDENT                  10 RESEARCH
+DALLAS
+
+TURNER     SALESMAN                   30 RESEARCH
+DALLAS
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+ADAMS      CLERK                      20 RESEARCH
+DALLAS
+
+JAMES      CLERK                      30 RESEARCH
+DALLAS
+
+FORD       ANALYST                    20 RESEARCH
+DALLAS
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+MILLER     CLERK                      10 RESEARCH
+DALLAS
+
+SMITH      CLERK                      20 SALES
+CHICAGO
+
+ALLEN      SALESMAN                   30 SALES
+CHICAGO
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+WARD       SALESMAN                   30 SALES
+CHICAGO
+
+JONES      MANAGER                    20 SALES
+CHICAGO
+
+MARTIN     SALESMAN                   30 SALES
+CHICAGO
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+BLAKE      MANAGER                    30 SALES
+CHICAGO
+
+CLARK      MANAGER                    10 SALES
+CHICAGO
+
+SCOTT      ANALYST                    20 SALES
+CHICAGO
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+KING       PRESIDENT                  10 SALES
+CHICAGO
+
+TURNER     SALESMAN                   30 SALES
+CHICAGO
+
+ADAMS      CLERK                      20 SALES
+CHICAGO
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+JAMES      CLERK                      30 SALES
+CHICAGO
+
+FORD       ANALYST                    20 SALES
+CHICAGO
+
+MILLER     CLERK                      10 SALES
+CHICAGO
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+SMITH      CLERK                      20 OPERATIONS
+BOSTON
+
+ALLEN      SALESMAN                   30 OPERATIONS
+BOSTON
+
+WARD       SALESMAN                   30 OPERATIONS
+BOSTON
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+JONES      MANAGER                    20 OPERATIONS
+BOSTON
+
+MARTIN     SALESMAN                   30 OPERATIONS
+BOSTON
+
+BLAKE      MANAGER                    30 OPERATIONS
+BOSTON
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+CLARK      MANAGER                    10 OPERATIONS
+BOSTON
+
+SCOTT      ANALYST                    20 OPERATIONS
+BOSTON
+
+KING       PRESIDENT                  10 OPERATIONS
+BOSTON
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+TURNER     SALESMAN                   30 OPERATIONS
+BOSTON
+
+ADAMS      CLERK                      20 OPERATIONS
+BOSTON
+
+JAMES      CLERK                      30 OPERATIONS
+BOSTON
+
+
+ENAME      JOB                    DEPTNO DNAME
+---------- ------------------ ---------- ----------------------------
+LOC
+--------------------------
+FORD       ANALYST                    20 OPERATIONS
+BOSTON
+
+MILLER     CLERK                      10 OPERATIONS
+BOSTON
+
+
+56 행이 선택되었습니다.
+
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1  select ename, job, emp.deptno, dname, loc
+  2  from emp, dept
+  3* where emp.deptno = dept.deptno
+SQL> /
+SQL> column dname format a10
+SQL> /
+
+ENAME      JOB                    DEPTNO DNAME      LOC
+---------- ------------------ ---------- ---------- --------------------------
+SMITH      CLERK                      20 RESEARCH   DALLAS
+ALLEN      SALESMAN                   30 SALES      CHICAGO
+WARD       SALESMAN                   30 SALES      CHICAGO
+JONES      MANAGER                    20 RESEARCH   DALLAS
+MARTIN     SALESMAN                   30 SALES      CHICAGO
+BLAKE      MANAGER                    30 SALES      CHICAGO
+CLARK      MANAGER                    10 ACCOUNTING NEW YORK
+SCOTT      ANALYST                    20 RESEARCH   DALLAS
+KING       PRESIDENT                  10 ACCOUNTING NEW YORK
+TURNER     SALESMAN                   30 SALES      CHICAGO
+ADAMS      CLERK                      20 RESEARCH   DALLAS
+
+ENAME      JOB                    DEPTNO DNAME      LOC
+---------- ------------------ ---------- ---------- --------------------------
+JAMES      CLERK                      30 SALES      CHICAGO
+FORD       ANALYST                    20 RESEARCH   DALLAS
+MILLER     CLERK                      10 ACCOUNTING NEW YORK
+
+14 행이 선택되었습니다.
+
+  1  create or replace view emp_dept as select ename, job, emp.deptno, dname, loc
+  2  from emp, dept
+  3* where emp.deptno = dept.deptno
+SQL> /
+
+뷰가 생성되었습니다.
+
+SQL> desc emp_dept;
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ ENAME                                              VARCHAR2(50)
+ JOB                                                VARCHAR2(9)
+ DEPTNO                                             NUMBER(2)
+ DNAME                                              VARCHAR2(14)
+ LOC                                                VARCHAR2(13)
+
+SQL> select * from emp_dept;
+
+ENAME      JOB                    DEPTNO DNAME      LOC
+---------- ------------------ ---------- ---------- --------------------------
+SMITH      CLERK                      20 RESEARCH   DALLAS
+ALLEN      SALESMAN                   30 SALES      CHICAGO
+WARD       SALESMAN                   30 SALES      CHICAGO
+JONES      MANAGER                    20 RESEARCH   DALLAS
+MARTIN     SALESMAN                   30 SALES      CHICAGO
+BLAKE      MANAGER                    30 SALES      CHICAGO
+CLARK      MANAGER                    10 ACCOUNTING NEW YORK
+SCOTT      ANALYST                    20 RESEARCH   DALLAS
+KING       PRESIDENT                  10 ACCOUNTING NEW YORK
+TURNER     SALESMAN                   30 SALES      CHICAGO
+ADAMS      CLERK                      20 RESEARCH   DALLAS
+
+ENAME      JOB                    DEPTNO DNAME      LOC
+---------- ------------------ ---------- ---------- --------------------------
+JAMES      CLERK                      30 SALES      CHICAGO
+FORD       ANALYST                    20 RESEARCH   DALLAS
+MILLER     CLERK                      10 ACCOUNTING NEW YORK
+
+14 행이 선택되었습니다.
+
+SQL> select ename, job, hiredate, deptno
+  2  from emp;
+
+ENAME      JOB                HIREDATE     DEPTNO
+---------- ------------------ -------- ----------
+SMITH      CLERK              80/12/17         20
+ALLEN      SALESMAN           81/02/20         30
+WARD       SALESMAN           81/02/22         30
+JONES      MANAGER            81/04/02         20
+MARTIN     SALESMAN           81/09/28         30
+BLAKE      MANAGER            81/05/01         30
+CLARK      MANAGER            81/06/09         10
+SCOTT      ANALYST            87/04/19         20
+KING       PRESIDENT          81/11/17         10
+TURNER     SALESMAN           81/09/08         30
+ADAMS      CLERK              87/05/23         20
+
+ENAME      JOB                HIREDATE     DEPTNO
+---------- ------------------ -------- ----------
+JAMES      CLERK              81/12/03         30
+FORD       ANALYST            81/12/03         20
+MILLER     CLERK              82/01/23         10
+
+14 행이 선택되었습니다.
+
+SQL> desc p_emp
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ ENAME                                              VARCHAR2(50)
+ JOB                                                VARCHAR2(9)
+ HIREDATE                                           DATE
+ DEPTNO
+
+
+SQL> grant select on p_emp to public;
+
+권한이 부여되었습니다.
+
+SQL> select * from 춘향이.emp;
+select * from 춘향이.emp
+                       *
+1행에 오류:
+ORA-00942: 테이블 또는 뷰가 존재하지 않습니다
+
+
+SQL> select * from 춘향이.p_emp;
+
+ENAME      JOB                HIREDATE     DEPTNO
+---------- ------------------ -------- ----------
+SMITH      CLERK              80/12/17         20
+ALLEN      SALESMAN           81/02/20         30
+WARD       SALESMAN           81/02/22         30
+JONES      MANAGER            81/04/02         20
+MARTIN     SALESMAN           81/09/28         30
+BLAKE      MANAGER            81/05/01         30
+CLARK      MANAGER            81/06/09         10
+SCOTT      ANALYST            87/04/19         20
+KING       PRESIDENT          81/11/17         10
+TURNER     SALESMAN           81/09/08         30
+ADAMS      CLERK              87/05/23         20
+
+ENAME      JOB                HIREDATE     DEPTNO
+---------- ------------------ -------- ----------
+JAMES      CLERK              81/12/03         30
+FORD       ANALYST            81/12/03         20
+MILLER     CLERK              82/01/23         10
+
+14 행이 선택되었습니다.
+
+
+
+SQL> select ename, job, hiredate from p_emp where deptno = 20
+  2  ;
+
+ENAME      JOB                HIREDATE
+---------- ------------------ --------
+SMITH      CLERK              80/12/17
+JONES      MANAGER            81/04/02
+SCOTT      ANALYST            87/04/19
+ADAMS      CLERK              87/05/23
+FORD       ANALYST            81/12/03
+
+SQL> edit
+file afiedt.buf(이)가 기록되었습니다
+
+  1* create view  p_emp20 as select ename, job, hiredate from p_emp where deptno = 20
+  2  /
+
+뷰가 생성되었습니다.
+
+SQL> desc p_emp20;
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ ENAME                                              VARCHAR2(50)
+ JOB                                                VARCHAR2(9)
+ HIREDATE                                           DATE
+
+SQL> select * from p_emp20;
+
+ENAME      JOB                HIREDATE
+---------- ------------------ --------
+SMITH      CLERK              80/12/17
+JONES      MANAGER            81/04/02
+SCOTT      ANALYST            87/04/19
+ADAMS      CLERK              87/05/23
+FORD       ANALYST            81/12/03
+
+SQL> revoke select on p_emp from public;
+
+권한이 취소되었습니다.
+
+SQL> grant select on p_emp20 to (20인 부서의 사람)
+
+
+
+SQL> drop view p_emp20;
+
+뷰가 삭제되었습니다.
+
+
+SQL> create synonym j_emp for jang.emp;
+
+동의어가 생성되었습니다.
+
+SQL> select * from tab;
+
+TNAME      TABTYPE         CLUSTERID
+---------- -------------- ----------
+DEPT       TABLE
+EMP        TABLE
+EMP20      VIEW
+EMP30      VIEW
+EMP_DEPT   VIEW
+J_EMP      SYNONYM
+MENTORING  TABLE
+P_EMP      VIEW
+SAL_REPORT VIEW
+TAB2       TABLE
+고객       TABLE
+
+11 행이 선택되었습니다.
+
+SQL> desc j_emp;
+ 이름                                      널?      유형
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER(4)
+ ENAME                                              VARCHAR2(10)
+ JOB                                                VARCHAR2(9)
+ MGR                                                NUMBER(4)
+ HIREDATE                                           DATE
+ SAL                                                NUMBER(7,2)
+ COMM                                               NUMBER(7,2)
+ DEPTNO                                             NUMBER(2)
+
+SQL> select * from j_emp;
+
+     EMPNO ENAME      JOB                       MGR HIREDATE        SAL
+---------- ---------- ------------------ ---------- -------- ----------
+      COMM     DEPTNO
+---------- ----------
+      7369 SMITH      CLERK                    7902 80/12/17        800
+                   20
+
+      7499 ALLEN      SALESMAN                 7698 81/02/20       1600
+       300         30
+
+      7521 WARD       SALESMAN                 7698 81/02/22       1250
+       500         30
+
+
+     EMPNO ENAME      JOB                       MGR HIREDATE        SAL
+---------- ---------- ------------------ ---------- -------- ----------
+      COMM     DEPTNO
+---------- ----------
+      7566 JONES      MANAGER                  7839 81/04/02       2975
+                   20
+
+      7654 MARTIN     SALESMAN                 7698 81/09/28       1250
+      1400         30
+
+      7698 BLAKE      MANAGER                  7839 81/05/01       2850
+                   30
+
+
+     EMPNO ENAME      JOB                       MGR HIREDATE        SAL
+---------- ---------- ------------------ ---------- -------- ----------
+      COMM     DEPTNO
+---------- ----------
+      7782 CLARK      MANAGER                  7839 81/06/09       2450
+                   10
+
+      7788 SCOTT      ANALYST                  7566 87/04/19       3000
+                   20
+
+      7839 KING       PRESIDENT                     81/11/17       5000
+                   10
+
+
+     EMPNO ENAME      JOB                       MGR HIREDATE        SAL
+---------- ---------- ------------------ ---------- -------- ----------
+      COMM     DEPTNO
+---------- ----------
+      7844 TURNER     SALESMAN                 7698 81/09/08       1500
+         0         30
+
+      7876 ADAMS      CLERK                    7788 87/05/23       1100
+                   20
+
+      7900 JAMES      CLERK                    7698 81/12/03        950
+                   30
+
+
+     EMPNO ENAME      JOB                       MGR HIREDATE        SAL
+---------- ---------- ------------------ ---------- -------- ----------
+      COMM     DEPTNO
+---------- ----------
+      7902 FORD       ANALYST                  7566 81/12/03       3300
+                   20
+
+      7934 MILLER     CLERK                    7782 82/01/23       1300
+                   10
+
+
+14 행이 선택되었습니다.
+
+
+
+
+한빛ㅁ트 속성()
